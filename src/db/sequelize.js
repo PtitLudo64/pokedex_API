@@ -19,7 +19,8 @@ const User = UserModel(sequelize, DataTypes);
 const debug = false;
   
 const initDb = () => {
-  return sequelize.sync({force: true}).then(_ => {
+  // return sequelize.sync({force: true}).then(_ => { // Recréé la table et son contenu.
+  return sequelize.sync().then(_ => {
     pokemons.map(pokemon => {
       Pokemon.create({
         name: pokemon.name,
@@ -30,6 +31,8 @@ const initDb = () => {
       }).then(pokemon => {
         if (debug)
           console.log(pokemon.toJSON())
+      }).catch(error => {
+        console.log(`Synhcro data : Une erreur "${error}" est survenue ${pokemon.name}\n`);
       });
     });
 
@@ -38,8 +41,10 @@ const initDb = () => {
         username: process.env.API_USER,
         password: hash
       })
-      .then(user => console.log(user.id, user.username, user.password))
-      .catch(error => console.log(`Une erreur ${error} s'est produite.`));
+      .then(user => { if (debug) 
+        console.log(user.id, user.username, user.password)
+      })
+      .catch(error => console.log(`User : Une erreur "${error}" s'est produite.`));
     });
 
 

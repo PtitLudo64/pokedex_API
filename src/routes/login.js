@@ -1,7 +1,8 @@
 const { User } = require('../db/sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const privateKey = require('../auth/private_key');
+const env = require('dotenv').config();
+const privateKey = process.env.AUTH_PRIVATE_KEY;
 
   
 module.exports = (app) => {

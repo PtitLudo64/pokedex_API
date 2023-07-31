@@ -9,7 +9,7 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, pr
   host: process.env.DB_URL,
   dialect: process.env.DB_ENGINE,
   dialectOptions: {
-    timezone: 'Etc/GMT-2',
+    timezone: 'Etc/GMT+2',
   },
   logging: false
 });
@@ -22,36 +22,40 @@ const initDb = () => {
   // return sequelize.sync({force: true}).then(_ => { // Recréé la table et son contenu.
   return sequelize.sync().then(_ => {
     pokemons.map(pokemon => {
-      Pokemon.create({
-        name: pokemon.name,
-        hp: pokemon.hp,
-        cp: pokemon.cp,
-        picture: pokemon.picture,
-        types: pokemon.types.join()
-      }).then(pokemon => {
-        if (debug)
-          console.log(pokemon.toJSON())
-      }).catch(error => {
-        console.log(`Synhcro data : Une erreur "${error}" est survenue ${pokemon.name}\n`);
-      });
+      if (debug) {
+        Pokemon.create({
+          name: pokemon.name,
+          hp: pokemon.hp,
+          cp: pokemon.cp,
+          picture: pokemon.picture,
+          types: pokemon.types.join()
+        }).then(pokemon => {
+            console.log(pokemon.toJSON())
+        }).catch(error => {
+          console.log(`Synhcro data : Une erreur "${error}" est survenue ${pokemon.name}\n`);
+        });
+      }
     });
 
     bcrypt.hash(process.env.API_USER_PWD, 10, (err, hash) => {
-      User.create({
-        username: process.env.API_USER,
-        password: hash
-      })
-      .then(user => { if (debug) 
-        console.log(user.id, user.username, user.password)
-      })
-      .catch(error => console.log(`User : Une erreur "${error}" s'est produite.`));
+      if (debug) {
+        User.create({
+          username: process.env.API_USER,
+          password: hash,
+          isadm : 1
+        })
+        .then(user => { 
+          console.log(user.id, user.username, user.password)
+        })
+        .catch(error => console.log(`User : Une erreur "${error}" s'est produite.`));
+      }
     });
 
 
     console.log('La base de donnée a bien été initialisée !');
   })
 };
-  
+
 module.exports = { 
   initDb, Pokemon, User
 };

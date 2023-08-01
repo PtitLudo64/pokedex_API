@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING
       },
-      isadm: {
+      userlevel: {
         type: DataTypes.INTEGER
       }
     })

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const env = require('dotenv').config();
 const privateKey = process.env.AUTH_PRIVATE_KEY;
-
+const userGrade = [ { lvl: "4", name: "Geter"}, {lvl: "6", name: "Seter"}, {lvl: "7",  name: "Allow"} ];
   
 module.exports = (app) => {
   app.post('/api/login', (req, res) => {
@@ -20,8 +20,9 @@ module.exports = (app) => {
           return res.status(401).json({ message });
         } else {
           // JWT
+          const grade = userGrade.find((niveau) => niveau.lvl === `${user.userlevel}`);
           const token = jwt.sign(
-            { userId: user.id, userAdm: user.isadm }, 
+            { userId: user.id, userLvl: grade.name }, 
             privateKey,
             { expiresIn: '4h'}
             );

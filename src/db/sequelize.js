@@ -42,7 +42,7 @@ const initDb = () => {
         User.create({
           username: process.env.API_USER,
           password: hash,
-          isadm : 1
+          userlevel : process.env.API_USER_LVL
         })
         .then(user => { 
           console.log(user.id, user.username, user.password)
